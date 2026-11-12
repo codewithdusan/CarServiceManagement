@@ -1,0 +1,36 @@
+﻿@model CarServiceManagement.Models.Customer
+
+<h1>Izmena mušterije</h1>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Ime</label>
+        <input asp-for="FirstName" />
+    </div>
+
+    <div>
+        <label>Prezime</label>
+        <input asp-for="LastName" />
+    </div>
+
+    <div>
+        <label>Telefon</label>
+        <input asp-for="Phone" />
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input asp-for="Email" />
+    </div>
+
+    <div>
+        <label>Adresa</label>
+        <input asp-for="Address" />
+    </div>
+
+    <button type="submit">Sačuvaj izmene</button>
+
+</form>

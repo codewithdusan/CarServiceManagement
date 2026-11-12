@@ -1,0 +1,42 @@
+﻿@model List<CarServiceManagement.Models.Customer>
+
+<h1>Lista mušterija</h1>
+
+<a asp-controller="Customers" asp-action="Create">
+    Dodaj novu mušteriju
+</a>
+
+<p>Ukupan broj mušterija: @Model.Count</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Telefon</th>
+            <th>Email</th>
+            <th>Adresa</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var musterija in Model)
+        {
+            <tr>
+                <td>@musterija.FirstName</td>
+                <td>@musterija.LastName</td>
+                <td>@musterija.Phone</td>
+                <td>@musterija.Email</td>
+                <td>@musterija.Address</td>
+                <td>
+                    <a asp-controller="Customers"
+                       asp-action="Edit"
+                       asp-route-id="@musterija.Id">
+                        Izmeni
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
