@@ -66,5 +66,20 @@ namespace CarServiceManagement.Controllers
 
             return View(musterija);
         }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var musterija = _kontekst.Customers.Find(id);
+
+            if (musterija == null)
+            {
+                return NotFound();
+            }
+
+            _kontekst.Customers.Remove(musterija);
+            _kontekst.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }

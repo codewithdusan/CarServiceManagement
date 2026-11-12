@@ -1,0 +1,37 @@
+﻿@model List<CarServiceManagement.Models.Vehicle>
+
+<h1>Lista vozila</h1>
+
+<p>Ukupan broj vozila: @Model.Count</p>
+<a asp-controller="Vehicles" asp-action="Create">
+    Dodaj novo vozilo
+</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Godina</th>
+            <th>Registracija</th>
+            <th>Vlasnik</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var vozilo in Model)
+        {
+            <tr>
+                <td>@vozilo.Brand</td>
+                <td>@vozilo.Model</td>
+                <td>@vozilo.Year</td>
+                <td>@vozilo.RegistrationNumber</td>
+                <td>@vozilo.Customer.FirstName @vozilo.Customer.LastName</td>
+                <td>
+                    <a asp-controller="Vehicles" asp-action="Edit" asp-route-id="@vozilo.Id">Izmeni</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

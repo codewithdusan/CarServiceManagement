@@ -1,0 +1,31 @@
+﻿@model CarServiceManagement.Models.Vehicle
+
+<h1>Izmena vozila</h1>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Marka</label>
+        <input asp-for="Brand" />
+    </div>
+
+    <div>
+        <label>Model</label>
+        <input asp-for="Model" />
+    </div>
+
+    <div>
+        <label>Godina proizvodnje</label>
+        <input asp-for="Year" />
+    </div>
+
+    <div>
+        <label>Registracija</label>
+        <input asp-for="RegistrationNumber" />
+    </div>
+
+    <button type="submit">Sačuvaj izmene</button>
+
+</form>

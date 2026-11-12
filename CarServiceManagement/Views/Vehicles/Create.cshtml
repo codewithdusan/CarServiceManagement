@@ -1,0 +1,35 @@
+﻿@model CarServiceManagement.Models.Vehicle
+
+<h1>Dodavanje novog vozila</h1>
+
+<form asp-action="Create" method="post">
+
+    <div>
+        <label>Marka</label>
+        <input asp-for="Brand" />
+    </div>
+
+    <div>
+        <label>Model</label>
+        <input asp-for="Model" />
+    </div>
+
+    <div>
+        <label>Godina proizvodnje</label>
+        <input asp-for="Year" />
+    </div>
+
+    <div>
+        <label>Registracija</label>
+        <input asp-for="RegistrationNumber" />
+    </div>
+    <div>
+        <label>Vlasnik</label>
+        <select asp-for="CustomerId" asp-items="ViewBag.Musterije">
+            <option value="">Izaberite vlasnika</option>
+        </select>
+    </div>
+
+    <button type="submit">Sačuvaj vozilo</button>
+
+</form>
