@@ -1,0 +1,56 @@
+﻿@model CarServiceManagement.Models.Customer
+
+<h1>Detalji mušterije</h1>
+
+<hr />
+
+<h3>@Model.FirstName @Model.LastName</h3>
+
+<p><strong>Telefon:</strong> @Model.Phone</p>
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Adresa:</strong> @Model.Address</p>
+
+<hr />
+
+<h3>Vozila mušterije</h3>
+
+@if (Model.Vehicles.Count == 0)
+{
+    <p>Ova mušterija nema registrovanih vozila.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Marka</th>
+                <th>Model</th>
+                <th>Godina</th>
+                <th>Registracija</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var vozilo in Model.Vehicles)
+            {
+                <tr>
+                    <td>@vozilo.Brand</td>
+                    <td>@vozilo.Model</td>
+                    <td>@vozilo.Year</td>
+                    <td>@vozilo.RegistrationNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+<a asp-controller="Customers"
+   asp-action="Edit"
+   asp-route-id="@Model.Id"
+   class="btn btn-primary">
+    Izmeni mušteriju
+</a>
+<a asp-controller="Customers" asp-action="Index" class="btn btn-secondary">
+    Nazad na mušterije
+</a>

@@ -15,13 +15,39 @@ namespace CarServiceManagement.Controllers
             _kontekst = kontekst;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string pretraga, string sortiranje)
         {
             var vozila = _kontekst.Vehicles
                 .Include(vozilo => vozilo.Customer)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(pretraga))
+            {
+                vozila = vozila.Where(vozilo =>
+                    vozilo.RegistrationNumber.Contains(pretraga) ||
+                    vozilo.Brand.Contains(pretraga) ||
+                    vozilo.Model.Contains(pretraga));
+            }
+
+            if (sortiranje == "najstarija")
+            {
+                vozila = vozila.OrderBy(vozilo => vozilo.Year);
+            }
+            else if (sortiranje == "najnovija")
+            {
+                vozila = vozila.OrderByDescending(vozilo => vozilo.Year);
+            }
+
+            return View(vozila.ToList());
+        }
+        public IActionResult ByCustomer(int id)
+        {
+            var vozila = _kontekst.Vehicles
+                .Include(vozilo => vozilo.Customer)
+                .Where(vozilo => vozilo.CustomerId == id)
                 .ToList();
 
-            return View(vozila);
+            return View("Index", vozila);
         }
         public IActionResult Create()
         {
@@ -71,6 +97,17 @@ namespace CarServiceManagement.Controllers
                 return NotFound();
             }
 
+            var musterije = _kontekst.Customers
+                .Select(musterija => new
+                {
+                    musterija.Id,
+                    ImeIPrezime = musterija.FirstName + " " + musterija.LastName
+                })
+                .ToList();
+
+            ViewBag.Musterije = new SelectList(
+                musterije, "Id", "ImeIPrezime", vozilo.CustomerId);
+
             return View(vozilo);
         }
         [HttpPost]
@@ -90,6 +127,7 @@ namespace CarServiceManagement.Controllers
                 postojeceVozilo.Model = vozilo.Model;
                 postojeceVozilo.Year = vozilo.Year;
                 postojeceVozilo.RegistrationNumber = vozilo.RegistrationNumber;
+                postojeceVozilo.CustomerId = vozilo.CustomerId;
 
                 _kontekst.SaveChanges();
 
@@ -98,5 +136,22 @@ namespace CarServiceManagement.Controllers
 
             return View(vozilo);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var vozilo = _kontekst.Vehicles.Find(id);
+
+            if (vozilo == null)
+            {
+                return NotFound();
+            }
+
+            _kontekst.Vehicles.Remove(vozilo);
+            _kontekst.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

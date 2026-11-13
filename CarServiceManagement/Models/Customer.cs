@@ -23,5 +23,6 @@ namespace CarServiceManagement.Models
         public string? Email { get; set; }
 
         public string? Address { get; set; }
+        public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     }
 }

@@ -1,6 +1,61 @@
 ﻿@model List<CarServiceManagement.Models.Customer>
+@if (TempData["Greska"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Greska"]
+    </div>
+}
 
 <h1>Lista mušterija</h1>
+<div class="mb-3">
+    <p>Ukupno mušterija: <strong>@ViewBag.UkupnoMusterija</strong></p>
+    <p>Ukupno vozila: <strong>@ViewBag.UkupnoVozila</strong></p>
+</div>
+<form asp-controller="Customers" asp-action="Index" method="get">
+
+    <input type="text"
+           name="pretraga"
+           placeholder="Pretraži ime, prezime ili telefon..."
+           value="@Context.Request.Query["pretraga"]" />
+
+    <button type="submit">Pretraži</button>
+    <select name="sortiranje" onchange="this.form.submit()">
+        <option value="">Podrazumevano sortiranje</option>
+
+        <option value="ime_asc"
+                selected="@(Context.Request.Query["sortiranje"] == "ime_asc" ? "selected" : null)">
+            Ime A-Z
+        </option>
+
+        <option value="ime_desc"
+                selected="@(Context.Request.Query["sortiranje"] == "ime_desc" ? "selected" : null)">
+            Ime Z-A
+        </option>
+
+        <option value="prezime_asc"
+                selected="@(Context.Request.Query["sortiranje"] == "prezime_asc" ? "selected" : null)">
+            Prezime A-Z
+        </option>
+        <option value="prezime_desc"
+                selected="@(Context.Request.Query["sortiranje"] == "prezime_desc" ? "selected" : null)">
+            Prezime Z-A
+        </option>
+        <option value="najvise_vozila"
+                selected="@(Context.Request.Query["sortiranje"] == "najvise_vozila" ? "selected" : null)">
+            Najviše vozila
+        </option>
+
+        <option value="najmanje_vozila"
+                selected="@(Context.Request.Query["sortiranje"] == "najmanje_vozila" ? "selected" : null)">
+            Najmanje vozila
+        </option>
+    </select>
+
+    <a asp-controller="Customers" asp-action="Index">
+        Poništi
+    </a>
+
+</form>
 
 <a asp-controller="Customers" asp-action="Create">
     Dodaj novu mušteriju
@@ -11,8 +66,10 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Vozila</th>
             <th>Ime</th>
             <th>Prezime</th>
+            <th>Broj vozila</th>
             <th>Telefon</th>
             <th>Email</th>
             <th>Adresa</th>
@@ -24,8 +81,21 @@
         @foreach (var musterija in Model)
         {
             <tr>
-                <td>@musterija.FirstName</td>
-                <td>@musterija.LastName</td>
+                <td>
+                    <a asp-controller="Vehicles"
+                       asp-action="ByCustomer"
+                       asp-route-id="@musterija.Id">
+                        Prikaži vozila
+                    </a>
+                </td>
+                <td colspan="2">
+                    <a asp-controller="Customers"
+                       asp-action="Details"
+                       asp-route-id="@musterija.Id">
+                        @musterija.FirstName @musterija.LastName
+                    </a>
+                </td>
+                <td>@musterija.Vehicles.Count</td>
                 <td>@musterija.Phone</td>
                 <td>@musterija.Email</td>
                 <td>@musterija.Address</td>

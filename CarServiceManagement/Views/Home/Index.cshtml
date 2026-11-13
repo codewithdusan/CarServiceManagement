@@ -1,8 +1,75 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Dashboard</h1>
+
+<div class="row mt-4">
+
+    <div class="col-md-6 mb-3">
+        <div class="card shadow p-4">
+            <h5>Ukupno mušterija</h5>
+            <h2>@ViewBag.UkupnoMusterija</h2>
+            <a asp-controller="Customers" asp-action="Index">
+                Prikaži mušterije
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card shadow p-4">
+            <h5>Ukupno vozila</h5>
+            <h2>@ViewBag.UkupnoVozila</h2>
+            <a asp-controller="Vehicles" asp-action="Index">
+                Prikaži vozila
+            </a>
+        </div>
+    </div>
+    <h3 class="mt-4">Poslednja dodata vozila</h3>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Marka</th>
+                <th>Model</th>
+                <th>Godište</th>
+                <th>Registracija</th>
+                <th>Vlasnik</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var vozilo in ViewBag.PoslednjaVozila)
+            {
+                <tr>
+                    <td>@vozilo.Brand</td>
+                    <td>@vozilo.Model</td>
+                    <td>@vozilo.Year</td>
+                    <td>@vozilo.RegistrationNumber</td>
+                    <td>@vozilo.Customer.FirstName @vozilo.Customer.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h3 class="mt-4">Vozila po mušterijama</h3>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Mušterija</th>
+                <th>Broj vozila</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var musterija in ViewBag.BrojVozilaPoMusteriji)
+            {
+                <tr>
+                    <td>@musterija.ImeIPrezime</td>
+                    <td>@musterija.BrojVozila</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 </div>

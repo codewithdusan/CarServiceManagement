@@ -1,31 +1,388 @@
-html {
-  font-size: 14px;
+:root {
+    --bg: #080707;
+    --bg-card: #111010;
+    --bg-card-hover: #181515;
+    --red: #ff2638;
+    --red-light: #ff5965;
+    --dark-red: #8e101d;
+    --text: #f5f5f5;
+    --text-muted: #999;
+    --border: rgba(255, 38, 56, 0.18);
 }
 
-@media (min-width: 768px) {
-  html {
+html {
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 10% 0%, rgba(255, 38, 56, 0.07), transparent 30%), var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+* {
+    box-sizing: border-box;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+a {
+    color: var(--red-light);
+    text-decoration: none;
 }
+
+    a:hover {
+        color: var(--red);
+    }
+
+/* ================================
+   GLAVNI RASPORED
+================================ */
+
+.app-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    width: min(1400px, 100%);
+    margin: 0 auto;
+    padding: 35px 30px;
+    flex: 1;
+}
+/* ================================
+   FOOTER
+================================ */
+
+.main-footer {
+    max-width: 1500px;
+    width: calc(100% - 60px);
+    margin: 20px auto 0;
+    padding: 25px 5px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* ================================
+   BOOTSTRAP KARTICE
+================================ */
+
+.card {
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    transition: 0.25s ease;
+}
+
+    .card:hover {
+        background: var(--bg-card-hover);
+        border-color: rgba(255, 38, 56, 0.45);
+        transform: translateY(-3px);
+    }
+
+    .card h5 {
+        color: var(--text-muted);
+    }
+
+    .card h2 {
+        color: var(--red);
+    }
+
+/* ================================
+   NASLOVI
+================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+    font-weight: 700;
+}
+
+h1 {
+    margin-bottom: 25px;
+}
+
+/* ================================
+  TABELE
+================================ */
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text);
+    --bs-table-border-color: var(--border);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.025);
+    --bs-table-striped-color: var(--text);
+    margin-top: 15px;
+}
+
+    .table thead th {
+        color: var(--red-light);
+        border-bottom: 1px solid var(--red);
+        padding: 15px;
+    }
+
+    .table td {
+        padding: 14px 15px;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 38, 56, 0.07);
+    }
+
+/* ================================
+  FORME I INPUTI
+================================ */
+
+.form-control,
+.form-select {
+    background-color: #151212;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #151212;
+        color: white;
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px rgba(255, 38, 56, 0.12);
+    }
+
+    .form-control::placeholder {
+        color: #777;
+    }
+
+    .form-select option {
+        background: #151212;
+        color: white;
+    }
+
+/* ================================
+   DUGMAD
+================================ */
+
+.btn {
+    border-radius: 10px;
+    padding: 9px 17px;
+    transition: 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: var(--dark-red);
+        border-color: var(--dark-red);
+    }
+
+.btn-success {
+    background: #16794e;
+    border-color: #16794e;
+}
+
+.btn-danger {
+    background: #a31625;
+    border-color: #a31625;
+}
+.nav-links a.active {
+    color: white;
+    background: rgba(255, 38, 56, 0.13);
+    border: 1px solid rgba(255, 38, 56, 0.3);
+    box-shadow: 0 0 15px rgba(255, 38, 56, 0.08);
+}
+
+    .nav-links a.active::after {
+        content: "";
+        display: block;
+        height: 2px;
+        width: 18px;
+        margin: 5px auto 0;
+        background: var(--red);
+        border-radius: 5px;
+    }
+
+/* NAVIGACIJA */
+
+.main-header {
+    padding: 22px 35px 0;
+    position: relative;
+    z-index: 100;
+}
+
+.main-navbar {
+    max-width: 1500px;
+    min-height: 82px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(12, 10, 10, 0.88);
+    border: 1px solid rgba(255, 38, 56, 0.22);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 25px rgba(255, 38, 56, 0.035);
+    backdrop-filter: blur(18px);
+}
+
+/* LOGO */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+}
+
+    .brand:hover {
+        color: white;
+    }
+
+.brand-icon {
+    width: 65px;
+    height: 65px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    color: var(--red);
+    font-size: 25px;
+    font-weight: 800;
+}
+
+/* LINKOVI U HEADERU */
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    justify-self: center;
+}
+
+    .nav-links a {
+        display: block;
+        padding: 12px 22px;
+        color: #999;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        transition: 0.25s ease;
+    }
+
+        .nav-links a:hover {
+            color: var(--red);
+            transform: scale(1.08);
+        }
+
+        .nav-links a.active {
+            color: white;
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            position: relative;
+        }
+
+            .nav-links a.active::after {
+                content: "";
+                position: absolute;
+                left: 22px;
+                right: 22px;
+                bottom: 5px;
+                height: 2px;
+                background: var(--red);
+                border-radius: 2px;
+            }
+
+/* STATUS */
+
+.navbar-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #888;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    justify-self: end;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #36d98b;
+    box-shadow: 0 0 12px rgba(54, 217, 139, 0.7);
+}
+/* MOBILNI MENI */
+
+@media (max-width: 767px) {
+
+    .main-header {
+        padding: 12px 12px 0;
+    }
+
+    .main-navbar {
+        padding: 14px 17px;
+        min-height: 70px;
+    }
+
+        .main-navbar .navbar-collapse {
+            flex-basis: 100%;
+            width: 100%;
+        }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 7px;
+        padding-top: 18px;
+    }
+
+        .nav-links a {
+            padding: 13px 16px;
+        }
+
+            .nav-links a.active::after {
+                left: auto;
+                right: 16px;
+                bottom: 50%;
+                transform: translateY(50%);
+            }
+}
+/* HORIZONTALNA NAVIGACIJA */
+.main-navbar {
+    max-width: 1500px;
+    min-height: 75px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    box-shadow: none;
+}
+
+    .main-navbar .navbar-collapse {
+        display: contents !important;
+    }

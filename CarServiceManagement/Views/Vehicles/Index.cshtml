@@ -1,6 +1,24 @@
 ﻿@model List<CarServiceManagement.Models.Vehicle>
 
 <h1>Lista vozila</h1>
+<form asp-controller="Vehicles" asp-action="Index" method="get">
+    <input type="text"
+           name="pretraga"
+           placeholder="Unesite registraciju..."
+           value="@Context.Request.Query["pretraga"]" />
+
+    <button type="submit">Pretraži</button>
+    <select name="sortiranje">
+        <option value="">Sortiraj</option>
+        <option value="najstarija"
+                selected="@(Context.Request.Query["sortiranje"] == "najstarija" ? "selected" : null)">
+            Najstarija vozila
+        </option>
+        <option value="najnovija">Najnovija vozila</option>
+    </select>
+
+    <a asp-controller="Vehicles" asp-action="Index">Poništi</a>
+</form>
 
 <p>Ukupan broj vozila: @Model.Count</p>
 <a asp-controller="Vehicles" asp-action="Create">
@@ -27,9 +45,30 @@
                 <td>@vozilo.Model</td>
                 <td>@vozilo.Year</td>
                 <td>@vozilo.RegistrationNumber</td>
-                <td>@vozilo.Customer.FirstName @vozilo.Customer.LastName</td>
                 <td>
-                    <a asp-controller="Vehicles" asp-action="Edit" asp-route-id="@vozilo.Id">Izmeni</a>
+                    @vozilo.Customer.FirstName @vozilo.Customer.LastName
+                    <br />
+                    @vozilo.Customer.Phone
+                </td>
+                <td>
+                    <a asp-controller="Vehicles"
+                       asp-action="Edit"
+                       asp-route-id="@vozilo.Id">
+                        Izmeni
+                    </a>
+
+                    <form asp-controller="Vehicles"
+                          asp-action="Delete"
+                          asp-route-id="@vozilo.Id"
+                          method="post"
+                          style="display:inline">
+
+                        <button type="submit"
+                                onclick="return confirm('Da li ste sigurni da želite da obrišete ovo vozilo?')">
+                            Obriši
+                        </button>
+
+                    </form>
                 </td>
             </tr>
         }

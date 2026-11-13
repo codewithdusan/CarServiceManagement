@@ -25,6 +25,12 @@
         <label>Registracija</label>
         <input asp-for="RegistrationNumber" />
     </div>
+    <div>
+        <label>Vlasnik</label>
+        <select asp-for="CustomerId" asp-items="ViewBag.Musterije">
+            <option value="">Izaberite vlasnika</option>
+        </select>
+    </div>
 
     <button type="submit">Sačuvaj izmene</button>
 
