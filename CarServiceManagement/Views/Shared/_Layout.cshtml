@@ -52,6 +52,13 @@
                                 Vozila
                             </a>
                         </li>
+                        <li>
+                            <a asp-controller="ServiceOrders"
+                               asp-action="Index"
+                               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ServiceOrders" ? "active" : "")">
+                                Radni nalozi
+                            </a>
+                        </li>
 
                     </ul>
 

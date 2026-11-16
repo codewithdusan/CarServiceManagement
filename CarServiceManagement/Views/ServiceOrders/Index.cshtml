@@ -1,0 +1,40 @@
+﻿@model List<CarServiceManagement.Models.ServiceOrder>
+
+<h1>Radni nalozi</h1>
+
+<p>Pregled svih servisnih naloga u sistemu.</p>
+
+<a asp-controller="ServiceOrders"
+   asp-action="Create"
+   class="btn btn-primary mb-3">
+    + Novi radni nalog
+</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Broj naloga</th>
+            <th>Mušterija</th>
+            <th>Vozilo</th>
+            <th>Opis kvara</th>
+            <th>Datum prijema</th>
+            <th>Status</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var nalog in Model)
+        {
+            <tr>
+                <td>#@nalog.Id</td>
+                <td>@nalog.Customer.FirstName @nalog.Customer.LastName</td>
+                <td>@nalog.Vehicle.Brand @nalog.Vehicle.Model</td>
+                <td>@nalog.Description</td>
+                <td>@nalog.DateCreated.ToString("dd.MM.yyyy.")</td>
+                <td>@nalog.Status</td>
+                <td>@nalog.Price.ToString("N2") RSD</td>
+            </tr>
+        }
+    </tbody>
+</table>
