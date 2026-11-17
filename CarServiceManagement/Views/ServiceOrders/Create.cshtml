@@ -4,25 +4,43 @@
 
 <form asp-action="Create" method="post">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
     <div class="mb-3">
-        <label asp-for="CustomerId" class="form-label">Mušterija</label>
+        <label asp-for="CustomerId" class="form-label">
+            Mušterija
+        </label>
+
         <select asp-for="CustomerId"
                 asp-items="ViewBag.Musterije"
-                class="form-select">
+                class="form-select"
+                id="customerSelect">
+
             <option value="">Izaberite mušteriju</option>
+
         </select>
-        <span asp-validation-for="CustomerId" class="text-danger"></span>
+
+        <span asp-validation-for="CustomerId"
+              class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="VehicleId" class="form-label">Vozilo</label>
+        <label asp-for="VehicleId" class="form-label">
+            Vozilo
+        </label>
+
         <select asp-for="VehicleId"
-                asp-items="ViewBag.Vozila"
-                class="form-select">
-            <option value="">Izaberite vozilo</option>
+                class="form-select"
+                id="vehicleSelect"
+                disabled>
+
+            <option value="">Prvo izaberite mušteriju</option>
+
         </select>
-        <span asp-validation-for="VehicleId" class="text-danger"></span>
+
+        <span asp-validation-for="VehicleId"
+              class="text-danger"></span>
     </div>
+
 
     <div class="mb-3">
         <label asp-for="Description" class="form-label">Opis kvara i potrebne popravke</label>
@@ -43,3 +61,76 @@
     <a asp-action="Index" class="btn btn-secondary">Nazad</a>
 
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const customerSelect = document.getElementById("customerSelect");
+        const vehicleSelect = document.getElementById("vehicleSelect");
+
+        customerSelect.addEventListener("change", async function () {
+
+            const customerId = this.value;
+
+            // Brišemo prethodna vozila
+            vehicleSelect.innerHTML = "";
+
+            if (!customerId) {
+                vehicleSelect.disabled = true;
+                vehicleSelect.innerHTML =
+                    '<option value="">Prvo izaberite mušteriju</option>';
+                return;
+            }
+
+            vehicleSelect.disabled = true;
+            vehicleSelect.innerHTML =
+                '<option value="">Učitavanje vozila...</option>';
+
+            try {
+
+                const response = await fetch(
+                    `/ServiceOrders/GetVehiclesByCustomer?customerId=${customerId}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Greška pri učitavanju vozila.");
+                }
+
+                const vozila = await response.json();
+
+                vehicleSelect.innerHTML =
+                    '<option value="">Izaberite vozilo</option>';
+
+                if (vozila.length === 0) {
+                    vehicleSelect.innerHTML =
+                        '<option value="">Mušterija nema vozila</option>';
+                    return;
+                }
+
+                vozila.forEach(vozilo => {
+
+                    const option = document.createElement("option");
+
+                    option.value = vozilo.id;
+                    option.textContent = vozilo.naziv;
+
+                    vehicleSelect.appendChild(option);
+
+                });
+
+                vehicleSelect.disabled = false;
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                vehicleSelect.innerHTML =
+                    '<option value="">Greška pri učitavanju vozila</option>';
+
+            }
+
+        });
+
+    });
+</script>

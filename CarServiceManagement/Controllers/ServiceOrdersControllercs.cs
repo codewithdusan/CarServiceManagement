@@ -14,15 +14,150 @@ namespace CarServiceManagement.Controllers
         {
             _kontekst = kontekst;
         }
-        public IActionResult Index()
+        public IActionResult Index(string pretraga, string status)
         {
-            var radniNalozi = _kontekst.ServiceOrders
+            var upit = _kontekst.ServiceOrders
                 .Include(nalog => nalog.Customer)
                 .Include(nalog => nalog.Vehicle)
-                .ToList();
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(pretraga))
+            {
+                upit = upit.Where(nalog =>
+                    (nalog.Customer != null &&
+                     (nalog.Customer.FirstName.Contains(pretraga) ||
+                      nalog.Customer.LastName.Contains(pretraga))) ||
+
+                    (nalog.Vehicle != null &&
+                     (nalog.Vehicle.Brand.Contains(pretraga) ||
+                      nalog.Vehicle.Model.Contains(pretraga) ||
+                      nalog.Vehicle.RegistrationNumber.Contains(pretraga)))
+                );
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                upit = upit.Where(nalog => nalog.Status == status);
+            }
+
+            var radniNalozi = upit.ToList();
+            ViewBag.UkupnoNaloga = _kontekst.ServiceOrders.Count();
+
+            ViewBag.NaCekanju = _kontekst.ServiceOrders
+                .Count(n => n.Status == "Na čekanju");
+
+            ViewBag.Utoku = _kontekst.ServiceOrders
+                .Count(n => n.Status == "U toku");
+
+            ViewBag.Zavrseno = _kontekst.ServiceOrders
+                .Count(n => n.Status == "Završen");
+
+            ViewBag.Pretraga = pretraga;
+            ViewBag.Status = status;
 
             return View(radniNalozi);
         }
+
+        public IActionResult Details(int id)
+        {
+            var nalog = _kontekst.ServiceOrders
+                .Include(n => n.Customer)
+                .Include(n => n.Vehicle)
+                .FirstOrDefault(n => n.Id == id);
+
+            if (nalog == null)
+            {
+                return NotFound();
+            }
+
+            return View(nalog);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var nalog = _kontekst.ServiceOrders
+                .FirstOrDefault(n => n.Id == id);
+
+            if (nalog == null)
+            {
+                return NotFound();
+            }
+
+            return View(nalog);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(ServiceOrder izmenjenNalog)
+        {
+            if (ModelState.IsValid)
+            {
+                var postojeciNalog = _kontekst.ServiceOrders
+                    .FirstOrDefault(n => n.Id == izmenjenNalog.Id);
+
+                if (postojeciNalog == null)
+                {
+                    return NotFound();
+                }
+
+                postojeciNalog.Description = izmenjenNalog.Description;
+                postojeciNalog.Status = izmenjenNalog.Status;
+                postojeciNalog.Price = izmenjenNalog.Price;
+
+                if (izmenjenNalog.Status == "Završen")
+                {
+                    postojeciNalog.DateCompleted =
+                        postojeciNalog.DateCompleted ?? DateTime.Now;
+                }
+                else
+                {
+                    postojeciNalog.DateCompleted = null;
+                }
+
+
+                _kontekst.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(izmenjenNalog);
+        }
+
+
+        public IActionResult Delete(int id)
+        {
+            var nalog = _kontekst.ServiceOrders
+                .Include(n => n.Customer)
+                .Include(n => n.Vehicle)
+                .FirstOrDefault(n => n.Id == id);
+
+            if (nalog == null)
+            {
+                return NotFound();
+            }
+
+            return View(nalog);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var nalog = _kontekst.ServiceOrders
+                .FirstOrDefault(n => n.Id == id);
+
+            if (nalog == null)
+            {
+                return NotFound();
+            }
+
+            _kontekst.ServiceOrders.Remove(nalog);
+
+            _kontekst.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
         public IActionResult Create()
         {
             var musterije = _kontekst.Customers
@@ -36,25 +171,30 @@ namespace CarServiceManagement.Controllers
             ViewBag.Musterije = new SelectList(
                 musterije, "Id", "ImeIPrezime");
 
+            ViewBag.Vozila = new SelectList(Enumerable.Empty<SelectListItem>(),"Value","Text");
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetVehiclesByCustomer(int customerId)
+        {
             var vozila = _kontekst.Vehicles
-                .Select(vozilo => new
+                .Where(v => v.CustomerId == customerId)
+                .Select(v => new
                 {
-                    vozilo.Id,
-                    NazivVozila = vozilo.Brand + " " + vozilo.Model
+                    id = v.Id,
+                    naziv = v.Brand + " " + v.Model
                 })
                 .ToList();
 
-            ViewBag.Vozila = new SelectList(
-                vozila, "Id", "NazivVozila");
-
-            return View();
+            return Json(vozila);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ServiceOrder nalog)
         {
-            // Proveravamo da li izabrano vozilo pripada izabranoj mušteriji
             var vozilo = _kontekst.Vehicles
                 .FirstOrDefault(v =>
                     v.Id == nalog.VehicleId &&
@@ -74,8 +214,6 @@ namespace CarServiceManagement.Controllers
 
                 return RedirectToAction("Index");
             }
-
-            // Ponovo popunjavamo padajuće menije ako postoje greške
             var musterije = _kontekst.Customers
                 .Select(musterija => new
                 {
@@ -87,13 +225,14 @@ namespace CarServiceManagement.Controllers
             ViewBag.Musterije = new SelectList(
                 musterije, "Id", "ImeIPrezime", nalog.CustomerId);
 
-            var vozila = _kontekst.Vehicles
-                .Select(v => new
-                {
-                    v.Id,
-                    NazivVozila = v.Brand + " " + v.Model
-                })
-                .ToList();
+            var vozila = _kontekst.Vehicles.Where(v => v.CustomerId == nalog.CustomerId).Select(v => new{v.Id,NazivVozila = v.Brand + " " + v.Model}).ToList();
+
+            ViewBag.Vozila = new SelectList(
+                vozila,
+                "Id",
+                "NazivVozila",
+                nalog.VehicleId
+            );
 
             ViewBag.Vozila = new SelectList(
                 vozila, "Id", "NazivVozila", nalog.VehicleId);

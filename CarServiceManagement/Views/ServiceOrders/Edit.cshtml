@@ -1,0 +1,70 @@
+﻿@model CarServiceManagement.Models.ServiceOrder
+
+@{
+    ViewData["Title"] = "Izmena servisnog naloga";
+}
+
+<div class="container mt-4">
+
+    <h2>Izmena servisnog naloga #@Model.Id</h2>
+
+    <hr />
+
+    <form asp-action="Edit" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">
+                Opis kvara
+            </label>
+
+            <textarea asp-for="Description"
+                      class="form-control"
+                      rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label">
+                Status naloga
+            </label>
+
+            <select asp-for="Status" class="form-select">
+                <option value="Na čekanju">Na čekanju</option>
+                <option value="U toku">U toku</option>
+                <option value="Završen">Završen</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">
+                Cena (RSD)
+            </label>
+
+            <input asp-for="Price"
+                   type="number"
+                   step="0.01"
+                   class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DateCompleted" class="form-label">
+                Datum završetka
+            </label>
+
+            <input asp-for="DateCompleted"
+                   type="date"
+                   class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Sačuvaj izmene
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Otkaži
+        </a>
+
+    </form>
+
+</div>

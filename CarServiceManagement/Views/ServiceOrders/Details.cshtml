@@ -1,0 +1,78 @@
+﻿@model CarServiceManagement.Models.ServiceOrder
+
+@{
+    ViewData["Title"] = "Detalji servisnog naloga";
+}
+
+<div class="container mt-4">
+
+    <h2>Detalji servisnog naloga #@Model.Id</h2>
+
+    <hr />
+
+    <div class="card shadow-sm p-4">
+
+        <h4>Podaci o mušteriji</h4>
+
+        <p>
+            <strong>Ime i prezime:</strong>
+            @Model.Customer?.FirstName @Model.Customer?.LastName
+        </p>
+
+        <hr />
+
+        <h4>Podaci o vozilu</h4>
+
+        <p>
+            <strong>Marka:</strong>
+            @Model.Vehicle?.Brand
+        </p>
+
+        <p>
+            <strong>Model:</strong>
+            @Model.Vehicle?.Model
+        </p>
+
+        <p>
+            <strong>Registracija:</strong>
+            @Model.Vehicle?.RegistrationNumber
+        </p>
+
+        <hr />
+
+        <h4>Informacije o servisu</h4>
+
+        <p>
+            <strong>Opis problema:</strong>
+            @Model.Description
+        </p>
+
+        <p>
+            <strong>Datum kreiranja:</strong>
+            @Model.DateCreated.ToString("dd.MM.yyyy.")
+        </p>
+
+        <p>
+            <strong>Datum završetka:</strong>
+            @(Model.DateCompleted?.ToString("dd.MM.yyyy.") ?? "Nije završeno")
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            @Model.Status
+        </p>
+
+        <p>
+            <strong>Cena:</strong>
+            @Model.Price.ToString("N2") RSD
+        </p>
+
+    </div>
+
+    <br />
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Nazad na servisne naloge
+    </a>
+
+</div>

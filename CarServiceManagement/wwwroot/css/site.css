@@ -36,10 +36,6 @@ a {
         color: var(--red);
     }
 
-/* ================================
-   GLAVNI RASPORED
-================================ */
-
 .app-wrapper {
     min-height: 100vh;
     display: flex;
@@ -52,9 +48,6 @@ a {
     padding: 35px 30px;
     flex: 1;
 }
-/* ================================
-   FOOTER
-================================ */
 
 .main-footer {
     max-width: 1500px;
@@ -67,10 +60,6 @@ a {
     color: var(--text-muted);
     font-size: 13px;
 }
-
-/* ================================
-   BOOTSTRAP KARTICE
-================================ */
 
 .card {
     background: var(--bg-card);
@@ -94,10 +83,6 @@ a {
         color: var(--red);
     }
 
-/* ================================
-   NASLOVI
-================================ */
-
 h1, h2, h3, h4, h5, h6 {
     color: var(--text);
     font-weight: 700;
@@ -106,10 +91,6 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
     margin-bottom: 25px;
 }
-
-/* ================================
-  TABELE
-================================ */
 
 .table {
     --bs-table-bg: transparent;
@@ -134,10 +115,6 @@ h1 {
     .table tbody tr:hover {
         background: rgba(255, 38, 56, 0.07);
     }
-
-/* ================================
-  FORME I INPUTI
-================================ */
 
 .form-control,
 .form-select {
@@ -164,10 +141,6 @@ h1 {
         background: #151212;
         color: white;
     }
-
-/* ================================
-   DUGMAD
-================================ */
 
 .btn {
     border-radius: 10px;
@@ -212,7 +185,6 @@ h1 {
         border-radius: 5px;
     }
 
-/* NAVIGACIJA */
 
 .main-header {
     padding: 22px 35px 0;
@@ -234,8 +206,6 @@ h1 {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 25px rgba(255, 38, 56, 0.035);
     backdrop-filter: blur(18px);
 }
-
-/* LOGO */
 
 .brand {
     display: flex;
@@ -263,7 +233,6 @@ h1 {
     font-weight: 800;
 }
 
-/* LINKOVI U HEADERU */
 
 .nav-links {
     display: flex;
@@ -311,8 +280,6 @@ h1 {
                 background: var(--red);
                 border-radius: 2px;
             }
-
-/* STATUS */
 
 .navbar-status {
     display: flex;
@@ -368,7 +335,6 @@ h1 {
                 transform: translateY(50%);
             }
 }
-/* HORIZONTALNA NAVIGACIJA */
 .main-navbar {
     max-width: 1500px;
     min-height: 75px;
@@ -385,4 +351,42 @@ h1 {
 
     .main-navbar .navbar-collapse {
         display: contents !important;
+    }
+.service-stat-card {
+    background: #151515;
+    border: 1px solid rgba(255, 38, 56, 0.15) !important;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .service-stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #ff2638;
+    }
+
+    .service-stat-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 38, 56, 0.5) !important;
+        box-shadow: 0 8px 25px rgba(255, 38, 56, 0.12);
+    }
+
+    .service-stat-card .card-body {
+        padding: 22px;
+    }
+
+    .service-stat-card h3 {
+        color: #ffffff;
+        font-size: 30px;
+    }
+
+    .service-stat-card p {
+        color: #a0a0a0 !important;
+        font-size: 14px;
     }

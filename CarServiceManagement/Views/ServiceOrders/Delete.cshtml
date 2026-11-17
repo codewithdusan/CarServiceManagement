@@ -1,0 +1,59 @@
+﻿@model CarServiceManagement.Models.ServiceOrder
+
+@{
+    ViewData["Title"] = "Brisanje servisnog naloga";
+}
+
+<div class="container mt-4">
+
+    <h2>Brisanje servisnog naloga #@Model.Id</h2>
+
+    <div class="alert alert-danger mt-3">
+        Da li ste sigurni da želite da obrišete ovaj servisni nalog?
+        Ova akcija se ne može poništiti.
+    </div>
+
+    <div class="card p-4 shadow-sm">
+
+        <p>
+            <strong>Mušterija:</strong>
+            @Model.Customer?.FirstName @Model.Customer?.LastName
+        </p>
+
+        <p>
+            <strong>Vozilo:</strong>
+            @Model.Vehicle?.Brand @Model.Vehicle?.Model
+        </p>
+
+        <p>
+            <strong>Opis kvara:</strong>
+            @Model.Description
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            @Model.Status
+        </p>
+
+        <p>
+            <strong>Cena:</strong>
+            @Model.Price.ToString("N2") RSD
+        </p>
+
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post" class="mt-3">
+
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit" class="btn btn-danger">
+            Obriši nalog
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Odustani
+        </a>
+
+    </form>
+
+</div>
