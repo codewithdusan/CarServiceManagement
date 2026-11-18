@@ -1,76 +1,267 @@
 ﻿@model List<CarServiceManagement.Models.Vehicle>
 
-<h1>Lista vozila</h1>
-<form asp-controller="Vehicles" asp-action="Index" method="get">
-    <input type="text"
-           name="pretraga"
-           placeholder="Unesite registraciju..."
-           value="@Context.Request.Query["pretraga"]" />
+@{
+    ViewData["Title"] = "Vozila";
+}
 
-    <button type="submit">Pretraži</button>
-    <select name="sortiranje">
-        <option value="">Sortiraj</option>
-        <option value="najstarija"
-                selected="@(Context.Request.Query["sortiranje"] == "najstarija" ? "selected" : null)">
-            Najstarija vozila
-        </option>
-        <option value="najnovija">Najnovija vozila</option>
-    </select>
+<div class="management-page">
 
-    <a asp-controller="Vehicles" asp-action="Index">Poništi</a>
-</form>
+    @if (TempData["Uspeh"] != null)
+    {
+        <div class="custom-toast toast-success" id="customToast">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["Uspeh"]</span>
+            <button type="button" onclick="closeToast()" class="toast-close">
+                &times;
+            </button>
+        </div>
+    }
 
-<p>Ukupan broj vozila: @Model.Count</p>
-<a asp-controller="Vehicles" asp-action="Create">
-    Dodaj novo vozilo
-</a>
+    @if (TempData["Greska"] != null)
+    {
+        <div class="custom-toast toast-error" id="customToast">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span>@TempData["Greska"]</span>
+            <button type="button" onclick="closeToast()" class="toast-close">
+                &times;
+            </button>
+        </div>
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Marka</th>
-            <th>Model</th>
-            <th>Godina</th>
-            <th>Registracija</th>
-            <th>Vlasnik</th>
-            <th>Akcije</th>
-        </tr>
-    </thead>
 
-    <tbody>
-        @foreach (var vozilo in Model)
-        {
-            <tr>
-                <td>@vozilo.Brand</td>
-                <td>@vozilo.Model</td>
-                <td>@vozilo.Year</td>
-                <td>@vozilo.RegistrationNumber</td>
-                <td>
-                    @vozilo.Customer.FirstName @vozilo.Customer.LastName
-                    <br />
-                    @vozilo.Customer.Phone
-                </td>
-                <td>
-                    <a asp-controller="Vehicles"
-                       asp-action="Edit"
-                       asp-route-id="@vozilo.Id">
-                        Izmeni
-                    </a>
+    <div class="management-header">
+        <div>
+            <div class="management-title">
+                <i class="bi bi-car-front-fill"></i>
+                <h1>Vozila</h1>
+            </div>
+            <p>Pregled i upravljanje svim registrovanim vozilima.</p>
+        </div>
 
-                    <form asp-controller="Vehicles"
-                          asp-action="Delete"
-                          asp-route-id="@vozilo.Id"
-                          method="post"
-                          style="display:inline">
+        <a asp-controller="Vehicles"
+           asp-action="Create"
+           class="action-save">
+            <i class="bi bi-plus-lg"></i>
+            Dodaj vozilo
+        </a>
+    </div>
 
-                        <button type="submit"
-                                onclick="return confirm('Da li ste sigurni da želite da obrišete ovo vozilo?')">
-                            Obriši
-                        </button>
+    <div class="management-stat-card">
+        <div>
+            <span>Ukupan broj vozila</span>
+            <h2>@Model.Count</h2>
+            <small>Registrovana vozila u sistemu</small>
+        </div>
 
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="management-stat-icon">
+            <i class="bi bi-car-front-fill"></i>
+        </div>
+    </div>
+
+    <div class="management-toolbar">
+
+        <form asp-controller="Vehicles"
+              asp-action="Index"
+              method="get"
+              class="management-search-form">
+
+            <div class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       name="pretraga"
+                       placeholder="Pretraži po registraciji..."
+                       value="@Context.Request.Query["pretraga"]" />
+            </div>
+
+            <select name="sortiranje" class="management-select">
+                <option value="">Podrazumevano sortiranje</option>
+
+                <option value="najstarija"
+                        selected="@(Context.Request.Query["sortiranje"] == "najstarija")">
+                    Najstarija vozila
+                </option>
+
+                <option value="najnovija"
+                        selected="@(Context.Request.Query["sortiranje"] == "najnovija")">
+                    Najnovija vozila
+                </option>
+            </select>
+
+            <button type="submit" class="management-filter-btn">
+                <i class="bi bi-funnel"></i>
+                Primeni
+            </button>
+
+            <a asp-controller="Vehicles"
+               asp-action="Index"
+               class="management-reset-btn">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Poništi
+            </a>
+
+        </form>
+
+    </div>
+
+    <div class="management-table-card">
+
+        <div class="management-table-header">
+            <div>
+                <h3>Lista vozila</h3>
+                <p>Detaljan pregled vozila i njihovih vlasnika.</p>
+            </div>
+
+            <span class="management-count">
+                @Model.Count vozila
+            </span>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="management-table">
+
+                <thead>
+                    <tr>
+                        <th>Vozilo</th>
+                        <th>Godina</th>
+                        <th>Registracija</th>
+                        <th>Vlasnik</th>
+                        <th>Akcije</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        @foreach (var vozilo in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="management-customer-info">
+                                        <div class="customer-avatar">
+                                            <i class="bi bi-car-front-fill"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                @vozilo.Brand @vozilo.Model
+                                            </strong>
+                                            <small>ID vozila: #@vozilo.Id</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="management-year">
+                                        @vozilo.Year
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="registration-badge">
+                                        <i class="bi bi-card-text"></i>
+                                        @vozilo.RegistrationNumber
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (vozilo.Customer != null)
+                                    {
+                                        <div class="management-owner">
+                                            <strong>
+                                                @vozilo.Customer.FirstName
+                                                @vozilo.Customer.LastName
+                                            </strong>
+                                            <small>
+                                                <i class="bi bi-telephone"></i>
+                                                @vozilo.Customer.Phone
+                                            </small>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Nije dodeljen vlasnik
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+
+                                        <a asp-controller="Vehicles"
+                                           asp-action="Details"
+                                           asp-route-id="@vozilo.Id"
+                                           class="action-btn action-details"
+                                           title="Detalji">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a asp-controller="Vehicles"
+                                           asp-action="Edit"
+                                           asp-route-id="@vozilo.Id"
+                                           class="action-btn action-edit"
+                                           title="Izmeni">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form asp-controller="Vehicles"
+                                              asp-action="Delete"
+                                              asp-route-id="@vozilo.Id"
+                                              method="post"
+                                              style="display:inline">
+
+                                            <button type="submit"
+                                                    class="action-btn action-delete"
+                                                    title="Obriši"
+                                                    onclick="return confirm('Da li ste sigurni da želite da obrišete ovo vozilo?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">
+                                <div class="management-empty">
+                                    <i class="bi bi-car-front"></i>
+                                    <h4>Nema pronađenih vozila</h4>
+                                    <p>Pokušajte sa drugom pretragom ili dodajte novo vozilo.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const toast = document.getElementById("customToast");
+
+    function closeToast() {
+        if (!toast) return;
+
+        toast.classList.add("toast-hide");
+
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
+
+    if (toast) {
+        setTimeout(closeToast, 4000);
+    }
+</script>

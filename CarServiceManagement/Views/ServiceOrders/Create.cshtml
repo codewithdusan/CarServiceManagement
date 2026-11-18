@@ -1,136 +1,204 @@
 ﻿@model CarServiceManagement.Models.ServiceOrder
 
-<h1>Novi radni nalog</h1>
+@{
+    ViewData["Title"] = "Novi radni nalog";
+}
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+<div class="edit-page">
 
-    <div class="mb-3">
-        <label asp-for="CustomerId" class="form-label">
-            Mušterija
-        </label>
+    <div class="edit-card">
 
-        <select asp-for="CustomerId"
-                asp-items="ViewBag.Musterije"
-                class="form-select"
-                id="customerSelect">
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="bi bi-clipboard2-plus-fill"></i>
+            </div>
 
-            <option value="">Izaberite mušteriju</option>
+            <div>
+                <h1>Novi radni nalog</h1>
+                <p>Kreirajte radni nalog i unesite detalje servisiranja.</p>
+            </div>
+        </div>
 
-        </select>
+        <div class="edit-divider"></div>
 
-        <span asp-validation-for="CustomerId"
-              class="text-danger"></span>
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-car-front-fill"></i>
+                Vozilo i mušterija
+            </h5>
+
+            <div class="mb-3">
+                <label asp-for="CustomerId" class="form-label">
+                    Mušterija
+                </label>
+
+                <select asp-for="CustomerId"
+                        asp-items="ViewBag.Musterije"
+                        class="form-select edit-input"
+                        id="customerSelect">
+                    <option value="">Izaberite mušteriju</option>
+                </select>
+
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="VehicleId" class="form-label">
+                    Vozilo
+                </label>
+
+                <select asp-for="VehicleId"
+                        class="form-select edit-input"
+                        id="vehicleSelect"
+                        disabled>
+                    <option value="">Prvo izaberite mušteriju</option>
+                </select>
+
+                <span asp-validation-for="VehicleId" class="text-danger"></span>
+
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i>
+                    Prikazuju se samo vozila izabrane mušterije.
+                </small>
+            </div>
+
+            <div class="edit-divider"></div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-tools"></i>
+                Detalji servisiranja
+            </h5>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">
+                    Opis kvara i potrebne popravke
+                </label>
+
+                <textarea asp-for="Description"
+                          class="form-control edit-input"
+                          rows="5"
+                          placeholder="Opišite kvar, potrebne popravke i dodatne napomene..."></textarea>
+
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Price" class="form-label">
+                    Cena servisiranja (RSD)
+                </label>
+
+                <div class="input-group">
+                    <input asp-for="Price"
+                           class="form-control edit-input"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           placeholder="Unesite cenu" />
+
+                    <span class="input-group-text edit-input-addon">RSD</span>
+                </div>
+
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="edit-footer">
+
+                <a asp-action="Index" class="edit-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    Nazad
+                </a>
+
+                <button type="submit" class="action-save">
+                    <i class="bi bi-check-lg"></i>
+                    Sačuvaj radni nalog
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="mb-3">
-        <label asp-for="VehicleId" class="form-label">
-            Vozilo
-        </label>
+</div>
 
-        <select asp-for="VehicleId"
-                class="form-select"
-                id="vehicleSelect"
-                disabled>
+@section Scripts {
 
-            <option value="">Prvo izaberite mušteriju</option>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-        </select>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-        <span asp-validation-for="VehicleId"
-              class="text-danger"></span>
-    </div>
+            const customerSelect = document.getElementById("customerSelect");
+            const vehicleSelect = document.getElementById("vehicleSelect");
 
+            customerSelect.addEventListener("change", async function () {
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label">Opis kvara i potrebne popravke</label>
-        <textarea asp-for="Description"
-                  class="form-control"
-                  rows="4"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+                const customerId = this.value;
 
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label">Cena (RSD)</label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
+                vehicleSelect.innerHTML = "";
 
-    <button type="submit" class="btn btn-primary">Sačuvaj radni nalog</button>
-
-    <a asp-action="Index" class="btn btn-secondary">Nazad</a>
-
-</form>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const customerSelect = document.getElementById("customerSelect");
-        const vehicleSelect = document.getElementById("vehicleSelect");
-
-        customerSelect.addEventListener("change", async function () {
-
-            const customerId = this.value;
-
-            // Brišemo prethodna vozila
-            vehicleSelect.innerHTML = "";
-
-            if (!customerId) {
-                vehicleSelect.disabled = true;
-                vehicleSelect.innerHTML =
-                    '<option value="">Prvo izaberite mušteriju</option>';
-                return;
-            }
-
-            vehicleSelect.disabled = true;
-            vehicleSelect.innerHTML =
-                '<option value="">Učitavanje vozila...</option>';
-
-            try {
-
-                const response = await fetch(
-                    `/ServiceOrders/GetVehiclesByCustomer?customerId=${customerId}`
-                );
-
-                if (!response.ok) {
-                    throw new Error("Greška pri učitavanju vozila.");
-                }
-
-                const vozila = await response.json();
-
-                vehicleSelect.innerHTML =
-                    '<option value="">Izaberite vozilo</option>';
-
-                if (vozila.length === 0) {
+                if (!customerId) {
+                    vehicleSelect.disabled = true;
                     vehicleSelect.innerHTML =
-                        '<option value="">Mušterija nema vozila</option>';
+                        '<option value="">Prvo izaberite mušteriju</option>';
                     return;
                 }
 
-                vozila.forEach(vozilo => {
-
-                    const option = document.createElement("option");
-
-                    option.value = vozilo.id;
-                    option.textContent = vozilo.naziv;
-
-                    vehicleSelect.appendChild(option);
-
-                });
-
-                vehicleSelect.disabled = false;
-
-            }
-            catch (error) {
-
-                console.error(error);
-
+                vehicleSelect.disabled = true;
                 vehicleSelect.innerHTML =
-                    '<option value="">Greška pri učitavanju vozila</option>';
+                    '<option value="">Učitavanje vozila...</option>';
 
-            }
+                try {
+
+                    const response = await fetch(
+                        `/ServiceOrders/GetVehiclesByCustomer?customerId=${encodeURIComponent(customerId)}`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Greška pri učitavanju vozila.");
+                    }
+
+                    const vozila = await response.json();
+
+                    vehicleSelect.innerHTML =
+                        '<option value="">Izaberite vozilo</option>';
+
+                    if (vozila.length === 0) {
+                        vehicleSelect.innerHTML =
+                            '<option value="">Mušterija nema vozila</option>';
+                        return;
+                    }
+
+                    vozila.forEach(vozilo => {
+
+                        const option = document.createElement("option");
+
+                        option.value = vozilo.id;
+                        option.textContent = vozilo.naziv;
+
+                        vehicleSelect.appendChild(option);
+
+                    });
+
+                    vehicleSelect.disabled = false;
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    vehicleSelect.innerHTML =
+                        '<option value="">Greška pri učitavanju vozila</option>';
+
+                }
+
+            });
 
         });
-
-    });
-</script>
+    </script>
+}

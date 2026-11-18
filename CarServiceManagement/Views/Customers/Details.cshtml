@@ -1,56 +1,134 @@
 ﻿@model CarServiceManagement.Models.Customer
 
-<h1>Detalji mušterije</h1>
-
-<hr />
-
-<h3>@Model.FirstName @Model.LastName</h3>
-
-<p><strong>Telefon:</strong> @Model.Phone</p>
-<p><strong>Email:</strong> @Model.Email</p>
-<p><strong>Adresa:</strong> @Model.Address</p>
-
-<hr />
-
-<h3>Vozila mušterije</h3>
-
-@if (Model.Vehicles.Count == 0)
-{
-    <p>Ova mušterija nema registrovanih vozila.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Marka</th>
-                <th>Model</th>
-                <th>Godina</th>
-                <th>Registracija</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var vozilo in Model.Vehicles)
-            {
-                <tr>
-                    <td>@vozilo.Brand</td>
-                    <td>@vozilo.Model</td>
-                    <td>@vozilo.Year</td>
-                    <td>@vozilo.RegistrationNumber</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+@{
+    ViewData["Title"] = "Detalji mušterije";
 }
 
-<br />
-<a asp-controller="Customers"
-   asp-action="Edit"
-   asp-route-id="@Model.Id"
-   class="btn btn-primary">
-    Izmeni mušteriju
-</a>
-<a asp-controller="Customers" asp-action="Index" class="btn btn-secondary">
-    Nazad na mušterije
-</a>
+<div class="details-page">
+
+    <div class="details-card">
+
+        <div class="details-header">
+            <div class="details-icon">
+                <i class="bi bi-person-vcard"></i>
+            </div>
+
+            <div>
+                <h2>Detalji mušterije</h2>
+                <p>Pregled informacija o mušteriji</p>
+            </div>
+        </div>
+
+        <div class="details-divider"></div>
+
+
+        <h5 class="details-section-title">
+            <i class="bi bi-person-lines-fill"></i>
+            Lični podaci
+        </h5>
+
+        <div class="details-info-grid">
+
+            <div class="details-info-item">
+                <span>Ime i prezime</span>
+                <strong>@Model.FirstName @Model.LastName</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Telefon</span>
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Phone) ? "Nije uneto" : Model.Phone)
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Email adresa</span>
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Email) ? "Nije uneto" : Model.Email)
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Adresa</span>
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Address) ? "Nije uneto" : Model.Address)
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="details-divider"></div>
+
+        <div class="details-section-header">
+            <h5 class="details-section-title">
+                <i class="bi bi-car-front-fill"></i>
+                Vozila mušterije
+            </h5>
+
+            <span class="details-count">
+                @(Model.Vehicles?.Count ?? 0) vozila
+            </span>
+        </div>
+
+        @if (Model.Vehicles == null || Model.Vehicles.Count == 0)
+        {
+            <div class="details-empty">
+                <i class="bi bi-car-front"></i>
+                <p>Ova mušterija nema registrovanih vozila.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table details-table">
+                    <thead>
+                        <tr>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Godina</th>
+                            <th>Registracija</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var vozilo in Model.Vehicles)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@vozilo.Brand</strong>
+                                </td>
+                                <td>@vozilo.Model</td>
+                                <td>@vozilo.Year</td>
+                                <td>
+                                    <span class="registration-badge">
+                                        @vozilo.RegistrationNumber
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <div class="details-footer">
+
+            <a asp-controller="Customers"
+               asp-action="Index"
+               class="edit-cancel">
+                <i class="bi bi-arrow-left"></i>
+                Nazad na mušterije
+            </a>
+
+            <a asp-controller="Customers"
+               asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="action-save">
+                <i class="bi bi-pencil-square"></i>
+                Izmeni mušteriju
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

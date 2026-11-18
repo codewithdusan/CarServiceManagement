@@ -2,12 +2,15 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Dashboard</h1>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="row mt-4">
+<h1 class="mb-4">Dashboard</h1>
 
-    <div class="col-md-6 mb-3">
-        <div class="card shadow p-4">
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow p-3">
             <h5>Ukupno mušterija</h5>
             <h2>@ViewBag.UkupnoMusterija</h2>
             <a asp-controller="Customers" asp-action="Index">
@@ -16,8 +19,8 @@
         </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-        <div class="card shadow p-4">
+    <div class="col-md-4">
+        <div class="card shadow p-3">
             <h5>Ukupno vozila</h5>
             <h2>@ViewBag.UkupnoVozila</h2>
             <a asp-controller="Vehicles" asp-action="Index">
@@ -25,65 +28,301 @@
             </a>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <div class="card shadow p-4">
-            <h5>Ukupan prihod</h5>
 
+    <div class="col-md-4">
+        <div class="card shadow p-3">
+            <h5>Ukupan prihod</h5>
             <h2 class="text-success">
                 @(((decimal)ViewBag.UkupanPrihod).ToString("N2")) RSD
             </h2>
-
-            <a asp-controller="ServiceOrders"
-               asp-action="Index">
+            <a asp-controller="ServiceOrders" asp-action="Index">
                 Prikaži radne naloge
             </a>
         </div>
     </div>
-    <h3 class="mt-4">Poslednja dodata vozila</h3>
-
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Marka</th>
-                <th>Model</th>
-                <th>Godište</th>
-                <th>Registracija</th>
-                <th>Vlasnik</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var vozilo in ViewBag.PoslednjaVozila)
-            {
-                <tr>
-                    <td>@vozilo.Brand</td>
-                    <td>@vozilo.Model</td>
-                    <td>@vozilo.Year</td>
-                    <td>@vozilo.RegistrationNumber</td>
-                    <td>@vozilo.Customer.FirstName @vozilo.Customer.LastName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <h3 class="mt-4">Vozila po mušterijama</h3>
-
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Mušterija</th>
-                <th>Broj vozila</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var musterija in ViewBag.BrojVozilaPoMusteriji)
-            {
-                <tr>
-                    <td>@musterija.ImeIPrezime</td>
-                    <td>@musterija.BrojVozila</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
 </div>
+
+
+<div class="row g-3">
+
+
+    <div class="col-lg-8">
+
+
+        <div class="card shadow p-4 mb-3">
+            <h5>Mesečni prihodi servisa</h5>
+
+            <div style="height: 350px;">
+                <canvas id="prihodiChart"></canvas>
+            </div>
+        </div>
+
+
+        <div class="card shadow p-4 mb-3">
+            <h5>Poslednja dodata vozila</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Godište</th>
+                            <th>Registracija</th>
+                            <th>Vlasnik</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var vozilo in ViewBag.PoslednjaVozila)
+                        {
+                            <tr>
+                                <td>@vozilo.Brand</td>
+                                <td>@vozilo.Model</td>
+                                <td>@vozilo.Year</td>
+                                <td>@vozilo.RegistrationNumber</td>
+                                <td>
+                                    @(vozilo.Customer?.FirstName ?? "")
+                                    @(vozilo.Customer?.LastName ?? "")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="card shadow p-4 mb-3">
+            <h5>Poslednji radni nalozi</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Mušterija</th>
+                            <th>Vozilo</th>
+                            <th>Opis radova</th>
+                            <th>Datum</th>
+                            <th>Status</th>
+                            <th>Cena</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var nalog in ViewBag.PoslednjiRadniNalozi)
+                        {
+                            <tr>
+                                <td>
+                                    @(nalog.Customer?.FirstName ?? "")
+                                    @(nalog.Customer?.LastName ?? "")
+                                </td>
+
+                                <td>
+                                    @(nalog.Vehicle?.Brand ?? "")
+                                    @(nalog.Vehicle?.Model ?? "")
+                                </td>
+
+                                <td>@nalog.Description</td>
+
+                                <td>
+                                    @nalog.DateCreated.ToString("dd.MM.yyyy.")
+                                </td>
+
+                                <td>
+                                    @if (nalog.Status == "Na čekanju")
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            Na čekanju
+                                        </span>
+                                    }
+                                    else if (nalog.Status == "U toku")
+                                    {
+                                        <span class="badge bg-primary">
+                                            U toku
+                                        </span>
+                                    }
+                                    else if (nalog.Status == "Završen")
+                                    {
+                                        <span class="badge bg-success">
+                                            Završen
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            @nalog.Status
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>@nalog.Price.ToString("N2") RSD</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <a asp-controller="ServiceOrders"
+               asp-action="Index"
+               class="btn btn-outline-danger mt-2">
+                Svi radni nalozi
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-4">
+
+        <div class="card shadow p-4 mb-3">
+            <h5>Status radnih naloga</h5>
+
+            <div style="height: 250px;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+
+        <div class="card shadow p-4 mb-3">
+            <h5>Vozila po mušterijama</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Mušterija</th>
+                            <th>Broj vozila</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var musterija in ViewBag.BrojVozilaPoMusteriji)
+                        {
+                            <tr>
+                                <td>@musterija.ImeIPrezime</td>
+                                <td>@musterija.BrojVozila</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    const meseci = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        ((IEnumerable<dynamic>)ViewBag.PrihodiPoMesecima)
+                                .Select(x => x.Mesec)
+                ));
+
+    const prihodi = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        ((IEnumerable<dynamic>)ViewBag.PrihodiPoMesecima)
+                                .Select(x => x.Prihod)
+                ));
+
+    const ctx = document.getElementById("prihodiChart");
+
+    new Chart(ctx, {
+        type: "bar",
+
+        data: {
+            labels: meseci,
+
+            datasets: [{
+                label: "Prihod (RSD)",
+                data: prihodi,
+                backgroundColor: "rgba(255, 38, 56, 0.65)",
+                borderColor: "#ff2638",
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#ffffff"
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: {
+                        color: "#aaaaaa"
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: "#aaaaaa"
+                    },
+                    grid: {
+                        color: "rgba(255,255,255,0.08)"
+                    }
+                }
+            }
+        }
+    });
+    const statusi = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                ((IEnumerable<dynamic>)ViewBag.BrojNalogaPoStatusu)
+                        .Select(x => x.Status)
+                ));
+
+    const brojNaloga = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                ((IEnumerable<dynamic>)ViewBag.BrojNalogaPoStatusu)
+                        .Select(x => x.Broj)
+                ));
+
+    const statusCtx = document.getElementById("statusChart");
+
+    new Chart(statusCtx, {
+        type: "doughnut",
+
+        data: {
+            labels: statusi,
+
+            datasets: [{
+                data: brojNaloga,
+                backgroundColor: statusi.map(status => {
+                    if (status === "Na čekanju") return "#ffc107";
+                    if (status === "U toku") return "#0d6efd";
+                    if (status === "Završen") return "#198754";
+
+                    return "#6c757d";
+                }),
+                borderColor: "#212529",
+                borderWidth: 3,
+                hoverOffset: 8
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "#ffffff",
+                        padding: 20
+                    }
+                }
+            }
+        }
+    });
+</script>
+

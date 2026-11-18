@@ -161,11 +161,13 @@ namespace CarServiceManagement.Controllers
             }
 
             _kontekst.ServiceOrders.Remove(nalog);
-
             _kontekst.SaveChanges();
+
+            TempData["Uspeh"] = "Servisni nalog je uspešno obrisan.";
 
             return RedirectToAction("Index");
         }
+
 
 
         public IActionResult Create()

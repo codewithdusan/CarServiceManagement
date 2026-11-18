@@ -115,6 +115,7 @@ namespace CarServiceManagement.Controllers
 
             return View(musterija);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
@@ -137,7 +138,10 @@ namespace CarServiceManagement.Controllers
             _kontekst.Customers.Remove(musterija);
             _kontekst.SaveChanges();
 
+            TempData["Uspeh"] = "Mušterija je uspešno obrisana.";
+
             return RedirectToAction("Index");
         }
+
     }
 }

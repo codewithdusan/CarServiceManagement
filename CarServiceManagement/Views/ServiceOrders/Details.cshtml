@@ -4,75 +4,168 @@
     ViewData["Title"] = "Detalji servisnog naloga";
 }
 
-<div class="container mt-4">
+<div class="details-page">
 
-    <h2>Detalji servisnog naloga #@Model.Id</h2>
+    <div class="details-card">
 
-    <hr />
 
-    <div class="card shadow-sm p-4">
+        <div class="details-header">
+            <div class="details-icon">
+                <i class="bi bi-clipboard2-check"></i>
+            </div>
 
-        <h4>Podaci o mušteriji</h4>
+            <div>
+                <h2>Servisni nalog #@Model.Id</h2>
+                <p>Detaljan pregled servisnog naloga</p>
+            </div>
+        </div>
 
-        <p>
-            <strong>Ime i prezime:</strong>
-            @Model.Customer?.FirstName @Model.Customer?.LastName
-        </p>
+        <div class="details-divider"></div>
 
-        <hr />
 
-        <h4>Podaci o vozilu</h4>
+        <h5 class="details-section-title">
+            <i class="bi bi-person-vcard"></i>
+            Podaci o mušteriji
+        </h5>
 
-        <p>
-            <strong>Marka:</strong>
-            @Model.Vehicle?.Brand
-        </p>
+        <div class="details-info-grid">
 
-        <p>
-            <strong>Model:</strong>
-            @Model.Vehicle?.Model
-        </p>
+            <div class="details-info-item">
+                <span>Ime i prezime</span>
+                <strong>
+                    @(Model.Customer != null
+                        ? $"{Model.Customer.FirstName} {Model.Customer.LastName}"
+                        : "Nije dostupno")
+                </strong>
+            </div>
 
-        <p>
-            <strong>Registracija:</strong>
-            @Model.Vehicle?.RegistrationNumber
-        </p>
+            <div class="details-info-item">
+                <span>Telefon</span>
+                <strong>
+                    @(Model.Customer?.Phone ?? "Nije uneto")
+                </strong>
+            </div>
 
-        <hr />
+            <div class="details-info-item">
+                <span>Email</span>
+                <strong>
+                    @(Model.Customer?.Email ?? "Nije uneto")
+                </strong>
+            </div>
 
-        <h4>Informacije o servisu</h4>
+        </div>
 
-        <p>
-            <strong>Opis problema:</strong>
-            @Model.Description
-        </p>
+        <div class="details-divider"></div>
 
-        <p>
-            <strong>Datum kreiranja:</strong>
-            @Model.DateCreated.ToString("dd.MM.yyyy.")
-        </p>
+        <!-- VEHICLE -->
+        <h5 class="details-section-title">
+            <i class="bi bi-car-front-fill"></i>
+            Podaci o vozilu
+        </h5>
 
-        <p>
-            <strong>Datum završetka:</strong>
-            @(Model.DateCompleted?.ToString("dd.MM.yyyy.") ?? "Nije završeno")
-        </p>
+        <div class="details-info-grid">
 
-        <p>
-            <strong>Status:</strong>
-            @Model.Status
-        </p>
+            <div class="details-info-item">
+                <span>Marka</span>
+                <strong>@(Model.Vehicle?.Brand ?? "Nije dostupno")</strong>
+            </div>
 
-        <p>
-            <strong>Cena:</strong>
-            @Model.Price.ToString("N2") RSD
-        </p>
+            <div class="details-info-item">
+                <span>Model</span>
+                <strong>@(Model.Vehicle?.Model ?? "Nije dostupno")</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Registracija</span>
+                <strong>@(Model.Vehicle?.RegistrationNumber ?? "Nije dostupno")</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Godina proizvodnje</span>
+                <strong>
+                    @(Model.Vehicle != null
+                        ? Model.Vehicle.Year.ToString()
+                        : "Nije dostupno")
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="details-divider"></div>
+
+        <h5 class="details-section-title">
+            <i class="bi bi-tools"></i>
+            Informacije o servisu
+        </h5>
+
+        <div class="details-info-grid">
+
+            <div class="details-info-item">
+                <span>Datum kreiranja</span>
+                <strong>@Model.DateCreated.ToString("dd.MM.yyyy.")</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Datum završetka</span>
+                <strong>
+                    @(Model.DateCompleted?.ToString("dd.MM.yyyy.") ?? "Nije završeno")
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Status naloga</span>
+
+                <strong>
+                    <span class="service-status
+                        @(Model.Status == "Završen" ? "status-completed" :
+  Model.Status == "U toku" ? "status-progress" :
+  "status-pending")">
+                        @Model.Status
+                    </span>
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Ukupna cena</span>
+                <strong class="details-price">
+                    @Model.Price.ToString("N2") RSD
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="details-description">
+            <span>
+                <i class="bi bi-card-text"></i>
+                Opis problema i radova
+            </span>
+
+            <p>
+                @(string.IsNullOrWhiteSpace(Model.Description)
+                    ? "Opis nije unet."
+                    : Model.Description)
+            </p>
+        </div>
+
+        <div class="details-footer">
+
+            <a asp-controller="ServiceOrders"
+               asp-action="Index"
+               class="edit-cancel">
+                <i class="bi bi-arrow-left"></i>
+                Nazad na naloge
+            </a>
+
+            <a asp-controller="ServiceOrders"
+               asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="action-save">
+                <i class="bi bi-pencil-square"></i>
+                Izmeni nalog
+            </a>
+
+        </div>
 
     </div>
-
-    <br />
-
-    <a asp-action="Index" class="btn btn-secondary">
-        Nazad na servisne naloge
-    </a>
 
 </div>

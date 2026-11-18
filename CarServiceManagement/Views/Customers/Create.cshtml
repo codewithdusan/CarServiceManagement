@@ -1,34 +1,135 @@
 ﻿@model CarServiceManagement.Models.Customer
 
-<h1>Dodavanje nove mušterije</h1>
+@{
+    ViewData["Title"] = "Dodavanje mušterije";
+}
 
-<form asp-action="Create" method="post">
+<div class="edit-page">
 
-    <div>
-        <label>Ime</label>
-        <input asp-for="FirstName" />
+    <div class="edit-card">
+
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="bi bi-person-plus"></i>
+            </div>
+
+            <div>
+                <h2>Dodavanje nove mušterije</h2>
+                <p>Unesite podatke o novoj mušteriji</p>
+            </div>
+        </div>
+
+        <div class="edit-divider"></div>
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-person-lines-fill"></i>
+                Lični podaci
+            </h5>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="FirstName" class="form-label">
+                        Ime
+                    </label>
+
+                    <input asp-for="FirstName"
+                           class="form-control edit-input"
+                           placeholder="Unesite ime" />
+
+                    <span asp-validation-for="FirstName"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="LastName" class="form-label">
+                        Prezime
+                    </label>
+
+                    <input asp-for="LastName"
+                           class="form-control edit-input"
+                           placeholder="Unesite prezime" />
+
+                    <span asp-validation-for="LastName"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label">
+                        Telefon
+                    </label>
+
+                    <input asp-for="Phone"
+                           type="tel"
+                           class="form-control edit-input"
+                           placeholder="Unesite broj telefona" />
+
+                    <span asp-validation-for="Phone"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label">
+                        Email adresa
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           class="form-control edit-input"
+                           placeholder="Unesite email adresu" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label">
+                        Adresa
+                    </label>
+
+                    <input asp-for="Address"
+                           class="form-control edit-input"
+                           placeholder="Unesite adresu stanovanja" />
+
+                    <span asp-validation-for="Address"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="edit-footer">
+
+                <a asp-controller="Customers"
+                   asp-action="Index"
+                   class="edit-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    Nazad
+                </a>
+
+                <button type="submit" class="action-save">
+                    <i class="bi bi-person-plus"></i>
+                    Sačuvaj mušteriju
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div>
-        <label>Prezime</label>
-        <input asp-for="LastName" />
-    </div>
+</div>
 
-    <div>
-        <label>Telefon</label>
-        <input asp-for="Phone" />
-    </div>
-
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" />
-    </div>
-
-    <div>
-        <label>Adresa</label>
-        <input asp-for="Address" />
-    </div>
-
-    <button type="submit">Sačuvaj mušteriju</button>
-
-</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

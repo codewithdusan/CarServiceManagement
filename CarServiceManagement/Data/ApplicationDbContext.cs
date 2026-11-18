@@ -15,9 +15,11 @@ namespace CarServiceManagement.Data
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<ServiceOrder> ServiceOrders { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ServiceOrder>()
                 .Property(nalog => nalog.Price)
                 .HasPrecision(18, 2);
@@ -30,9 +32,10 @@ namespace CarServiceManagement.Data
 
             modelBuilder.Entity<ServiceOrder>()
                 .HasOne(nalog => nalog.Vehicle)
-                .WithMany()
+                .WithMany(vozilo => vozilo.ServiceOrders)
                 .HasForeignKey(nalog => nalog.VehicleId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
+
     }
 }

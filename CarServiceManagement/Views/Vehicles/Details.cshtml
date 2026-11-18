@@ -1,0 +1,115 @@
+﻿@model CarServiceManagement.Models.Vehicle
+
+@{
+    ViewData["Title"] = "Detalji vozila";
+}
+
+<div class="details-page">
+
+    <div class="details-card">
+
+        <div class="details-header">
+            <div class="details-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+
+            <div>
+                <h2>Detalji vozila</h2>
+                <p>Pregled informacija o vozilu</p>
+            </div>
+        </div>
+
+        <div class="details-divider"></div>
+
+        <h5 class="details-section-title">
+            <i class="bi bi-car-front-fill"></i>
+            Podaci o vozilu
+        </h5>
+
+        <div class="details-info-grid">
+
+            <div class="details-info-item">
+                <span>Marka</span>
+                <strong>@Model.Brand</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Model</span>
+                <strong>@Model.Model</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Godina proizvodnje</span>
+                <strong>@Model.Year</strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Registracija</span>
+                <strong>@Model.RegistrationNumber</strong>
+            </div>
+
+        </div>
+
+        <div class="details-divider"></div>
+
+        <h5 class="details-section-title">
+            <i class="bi bi-person-vcard"></i>
+            Podaci o vlasniku
+        </h5>
+
+        <div class="details-info-grid">
+
+            <div class="details-info-item">
+                <span>Ime i prezime</span>
+                <strong>
+                    @(Model.Customer != null
+                        ? $"{Model.Customer.FirstName} {Model.Customer.LastName}"
+                        : "Nije dostupno")
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Telefon</span>
+                <strong>
+                    @(Model.Customer?.Phone ?? "Nije uneto")
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Email</span>
+                <strong>
+                    @(Model.Customer?.Email ?? "Nije uneto")
+                </strong>
+            </div>
+
+            <div class="details-info-item">
+                <span>Adresa</span>
+                <strong>
+                    @(Model.Customer?.Address ?? "Nije uneto")
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="details-footer">
+
+            <a asp-controller="Vehicles"
+               asp-action="Index"
+               class="edit-cancel">
+                <i class="bi bi-arrow-left"></i>
+                Nazad na vozila
+            </a>
+
+            <a asp-controller="Vehicles"
+               asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="action-save">
+                <i class="bi bi-pencil-square"></i>
+                Izmeni vozilo
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

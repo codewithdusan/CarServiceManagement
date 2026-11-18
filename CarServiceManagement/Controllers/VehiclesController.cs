@@ -40,6 +40,21 @@ namespace CarServiceManagement.Controllers
 
             return View(vozila.ToList());
         }
+
+        public IActionResult Details(int id)
+        {
+            var vozilo = _kontekst.Vehicles
+                .Include(vozilo => vozilo.Customer)
+                .FirstOrDefault(vozilo => vozilo.Id == id);
+
+            if (vozilo == null)
+            {
+                return NotFound();
+            }
+
+            return View(vozilo);
+        }
+
         public IActionResult ByCustomer(int id)
         {
             var vozila = _kontekst.Vehicles
@@ -136,22 +151,36 @@ namespace CarServiceManagement.Controllers
 
             return View(vozilo);
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var vozilo = _kontekst.Vehicles.Find(id);
+            var vozilo = _kontekst.Vehicles
+                .Include(v => v.ServiceOrders)
+                .FirstOrDefault(v => v.Id == id);
 
             if (vozilo == null)
             {
                 return NotFound();
             }
 
+            if (vozilo.ServiceOrders.Any())
+            {
+                TempData["Greska"] = "Nije moguće obrisati vozilo jer ima povezane servisne naloge.";
+                return RedirectToAction("Index");
+            }
+
             _kontekst.Vehicles.Remove(vozilo);
             _kontekst.SaveChanges();
 
+            TempData["Uspeh"] = "Vozilo je uspešno obrisano.";
+
             return RedirectToAction("Index");
         }
+
+
 
     }
 }

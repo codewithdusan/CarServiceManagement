@@ -4,67 +4,135 @@
     ViewData["Title"] = "Izmena servisnog naloga";
 }
 
-<div class="container mt-4">
+<div class="edit-page">
 
-    <h2>Izmena servisnog naloga #@Model.Id</h2>
+    <div class="edit-card">
 
-    <hr />
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="bi bi-clipboard2-check-fill"></i>
+            </div>
 
-    <form asp-action="Edit" method="post">
-
-        <input type="hidden" asp-for="Id" />
-
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label">
-                Opis kvara
-            </label>
-
-            <textarea asp-for="Description"
-                      class="form-control"
-                      rows="4"></textarea>
+            <div>
+                <h1>Izmena radnog naloga</h1>
+                <p>Ažurirajte informacije za radni nalog #@Model.Id.</p>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Status" class="form-label">
-                Status naloga
-            </label>
+        <div class="edit-divider"></div>
 
-            <select asp-for="Status" class="form-select">
-                <option value="Na čekanju">Na čekanju</option>
-                <option value="U toku">U toku</option>
-                <option value="Završen">Završen</option>
-            </select>
-        </div>
+        <form asp-action="Edit" method="post">
 
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label">
-                Cena (RSD)
-            </label>
+            <input type="hidden" asp-for="Id" />
 
-            <input asp-for="Price"
-                   type="number"
-                   step="0.01"
-                   class="form-control" />
-        </div>
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
 
-        <div class="mb-3">
-            <label asp-for="DateCompleted" class="form-label">
-                Datum završetka
-            </label>
+            <h5 class="edit-section-title">
+                <i class="bi bi-tools"></i>
+                Detalji popravke
+            </h5>
 
-            <input asp-for="DateCompleted"
-                   type="date"
-                   class="form-control" />
-        </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">
+                    Opis kvara i potrebne popravke
+                </label>
 
-        <button type="submit" class="btn btn-primary">
-            Sačuvaj izmene
-        </button>
+                <textarea asp-for="Description"
+                          class="form-control edit-input"
+                          rows="5"
+                          placeholder="Unesite opis kvara i izvršenih popravki..."></textarea>
 
-        <a asp-action="Index" class="btn btn-secondary">
-            Otkaži
-        </a>
+                <span asp-validation-for="Description"
+                      class="text-danger small"></span>
+            </div>
 
-    </form>
+            <div class="mb-4">
+                <label asp-for="Status" class="form-label">
+                    Status radnog naloga
+                </label>
+
+                <select asp-for="Status" class="form-select edit-input">
+                    <option value="Na čekanju">Na čekanju</option>
+                    <option value="U toku">U toku</option>
+                    <option value="Završen">Završen</option>
+                </select>
+
+                <span asp-validation-for="Status"
+                      class="text-danger small"></span>
+            </div>
+
+            <div class="edit-divider"></div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-currency-exchange"></i>
+                Finansijski podaci
+            </h5>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label">
+                    Cena servisiranja
+                </label>
+
+                <div class="input-group">
+                    <input asp-for="Price"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           class="form-control edit-input"
+                           placeholder="Unesite cenu" />
+
+                    <span class="input-group-text edit-input-addon">
+                        RSD
+                    </span>
+                </div>
+
+                <span asp-validation-for="Price"
+                      class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="DateCompleted" class="form-label">
+                    Datum završetka
+                </label>
+
+                <input asp-for="DateCompleted"
+                       type="date"
+                       class="form-control edit-input" />
+
+                <span asp-validation-for="DateCompleted"
+                      class="text-danger small"></span>
+
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i>
+                    Datum završetka se evidentira kada je servisni nalog završen.
+                </small>
+            </div>
+
+            <div class="edit-footer">
+
+                <a asp-controller="ServiceOrders"
+                   asp-action="Index"
+                   class="edit-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    Otkaži
+                </a>
+
+                <button type="submit" class="action-save">
+                    <i class="bi bi-floppy"></i>
+                    Sačuvaj izmene
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

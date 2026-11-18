@@ -1,35 +1,102 @@
 ﻿@model CarServiceManagement.Models.Vehicle
 
-<h1>Dodavanje novog vozila</h1>
+@{
+    ViewData["Title"] = "Dodavanje vozila";
+}
 
-<form asp-action="Create" method="post">
+<div class="edit-page">
 
-    <div>
-        <label>Marka</label>
-        <input asp-for="Brand" />
+    <div class="edit-card">
+
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="bi bi-car-front-fill"></i>
+            </div>
+
+            <div>
+                <h1>Dodavanje novog vozila</h1>
+                <p>Unesite podatke o vozilu i njegovom vlasniku.</p>
+            </div>
+        </div>
+
+        <div class="edit-divider"></div>
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-info-circle"></i>
+                Informacije o vozilu
+            </h5>
+
+            <div class="mb-3">
+                <label asp-for="Brand" class="form-label">Marka vozila</label>
+                <input asp-for="Brand" class="form-control edit-input"
+                       placeholder="Npr. BMW, Audi, Volkswagen..." />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Model" class="form-label">Model vozila</label>
+                <input asp-for="Model" class="form-control edit-input"
+                       placeholder="Npr. 320d, A4, Golf 7..." />
+                <span asp-validation-for="Model" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Year" class="form-label">Godina proizvodnje</label>
+                <input asp-for="Year" type="number" class="form-control edit-input"
+                       placeholder="Npr. 2018" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RegistrationNumber" class="form-label">Registracija</label>
+                <input asp-for="RegistrationNumber" class="form-control edit-input"
+                       placeholder="Npr. NI-123-AB" />
+                <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+            </div>
+
+            <div class="edit-divider"></div>
+
+            <h5 class="edit-section-title">
+                <i class="bi bi-person-fill"></i>
+                Vlasnik vozila
+            </h5>
+
+            <div class="mb-4">
+                <label asp-for="CustomerId" class="form-label">Izaberite mušteriju</label>
+
+                <select asp-for="CustomerId"
+                        asp-items="ViewBag.Musterije"
+                        class="form-select edit-input">
+                    <option value="">Izaberite vlasnika</option>
+                </select>
+
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+
+            <div class="edit-footer">
+                <a asp-action="Index" class="edit-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    Nazad
+                </a>
+
+                <button type="submit" class="action-save">
+                    <i class="bi bi-check-lg"></i>
+                    Sačuvaj vozilo
+                </button>
+            </div>
+
+        </form>
+
     </div>
 
-    <div>
-        <label>Model</label>
-        <input asp-for="Model" />
-    </div>
+</div>
 
-    <div>
-        <label>Godina proizvodnje</label>
-        <input asp-for="Year" />
-    </div>
-
-    <div>
-        <label>Registracija</label>
-        <input asp-for="RegistrationNumber" />
-    </div>
-    <div>
-        <label>Vlasnik</label>
-        <select asp-for="CustomerId" asp-items="ViewBag.Musterije">
-            <option value="">Izaberite vlasnika</option>
-        </select>
-    </div>
-
-    <button type="submit">Sačuvaj vozilo</button>
-
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

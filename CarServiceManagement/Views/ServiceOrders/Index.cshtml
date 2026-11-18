@@ -1,194 +1,369 @@
 ﻿@model List<CarServiceManagement.Models.ServiceOrder>
 
-<h1>Radni nalozi</h1>
-<div class="row g-3 mb-4">
+@{
+    ViewData["Title"] = "Radni nalozi";
+}
 
-    <div class="col-md-3 col-6">
-        <div class="card service-stat-card h-100">
-            <div class="card-body">
-                <p class="text-muted mb-2">Ukupno naloga</p>
-                <h3 class="fw-bold mb-0">
-                    @ViewBag.UkupnoNaloga
-                </h3>
+<div class="management-page">
+
+    @if (TempData["Uspeh"] != null)
+    {
+        <div class="custom-toast toast-success" id="customToast">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["Uspeh"]</span>
+            <button type="button" onclick="closeToast()" class="toast-close">
+                &times;
+            </button>
+        </div>
+    }
+
+    @if (TempData["Greska"] != null)
+    {
+        <div class="custom-toast toast-error" id="customToast">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span>@TempData["Greska"]</span>
+            <button type="button" onclick="closeToast()" class="toast-close">
+                &times;
+            </button>
+        </div>
+    }
+
+
+    <div class="management-header">
+        <div>
+            <div class="management-title">
+                <i class="bi bi-clipboard2-check-fill"></i>
+                <h1>Radni nalozi</h1>
+            </div>
+            <p>Pregled i upravljanje svim servisnim nalozima.</p>
+        </div>
+
+        <a asp-controller="ServiceOrders"
+           asp-action="Create"
+           class="action-save">
+            <i class="bi bi-plus-lg"></i>
+            Novi radni nalog
+        </a>
+    </div>
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="card service-stat-card h-100">
+                <div class="card-body">
+                    <div class="service-stat-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+                    <p class="text-muted mb-2">Ukupno naloga</p>
+                    <h3 class="fw-bold mb-0">
+                        @ViewBag.UkupnoNaloga
+                    </h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3 col-6">
-        <div class="card service-stat-card h-100">
-            <div class="card-body">
-                <p class="text-muted mb-2">Na čekanju</p>
-                <h3 class="fw-bold text-warning mb-0">
-                    @ViewBag.NaCekanju
-                </h3>
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="card service-stat-card h-100">
+                <div class="card-body">
+                    <div class="service-stat-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <p class="text-muted mb-2">Na čekanju</p>
+                    <h3 class="fw-bold text-warning mb-0">
+                        @ViewBag.NaCekanju
+                    </h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3 col-6">
-        <div class="card service-stat-card h-100">
-            <div class="card-body">
-                <p class="text-muted mb-2">U toku</p>
-                <h3 class="fw-bold text-primary mb-0">
-                    @ViewBag.Utoku
-                </h3>
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="card service-stat-card h-100">
+                <div class="card-body">
+                    <div class="service-stat-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <p class="text-muted mb-2">U toku</p>
+                    <h3 class="fw-bold text-primary mb-0">
+                        @ViewBag.Utoku
+                    </h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3 col-6">
-        <div class="card service-stat-card h-100">
-            <div class="card-body">
-                <p class="text-muted mb-2">Završeno</p>
-                <h3 class="fw-bold text-success mb-0">
-                    @ViewBag.Zavrseno
-                </h3>
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="card service-stat-card h-100">
+                <div class="card-body">
+                    <div class="service-stat-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <p class="text-muted mb-2">Završeno</p>
+                    <h3 class="fw-bold text-success mb-0">
+                        @ViewBag.Zavrseno
+                    </h3>
+                </div>
             </div>
+        </div>
+
+    </div>
+    <div class="management-toolbar">
+
+        <form asp-controller="ServiceOrders"
+              asp-action="Index"
+              method="get"
+              class="management-search-form">
+
+            <div class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       name="pretraga"
+                       value="@ViewBag.Pretraga"
+                       placeholder="Pretraži mušteriju, vozilo ili registraciju..." />
+            </div>
+
+            <select name="status" class="management-select">
+
+                <option value="">Svi statusi</option>
+
+                <option value="Na čekanju"
+                        selected="@(ViewBag.Status == "Na čekanju")">
+                    Na čekanju
+                </option>
+
+                <option value="U toku"
+                        selected="@(ViewBag.Status == "U toku")">
+                    U toku
+                </option>
+
+                <option value="Završen"
+                        selected="@(ViewBag.Status == "Završen")">
+                    Završen
+                </option>
+
+            </select>
+
+            <select name="sortiranje" class="management-select">
+
+                <option value="najnoviji"
+                        selected="@(ViewBag.Sortiranje != "najstariji")">
+                    Najnoviji prvo
+                </option>
+
+                <option value="najstariji"
+                        selected="@(ViewBag.Sortiranje == "najstariji")">
+                    Najstariji prvo
+                </option>
+
+            </select>
+
+            <button type="submit" class="management-filter-btn">
+                <i class="bi bi-funnel"></i>
+                Primeni
+            </button>
+
+            <a asp-controller="ServiceOrders"
+               asp-action="Index"
+               class="management-reset-btn">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Poništi
+            </a>
+
+        </form>
+
+    </div>
+    <div class="management-table-card">
+
+        <div class="management-table-header">
+            <div>
+                <h3>Lista radnih naloga</h3>
+                <p>Pregled svih servisnih intervencija.</p>
+            </div>
+
+            <span class="management-count">
+                @Model.Count naloga
+            </span>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="management-table">
+
+                <thead>
+                    <tr>
+                        <th>Broj naloga</th>
+                        <th>Mušterija</th>
+                        <th>Vozilo</th>
+                        <th>Opis kvara</th>
+                        <th>Datum prijema</th>
+                        <th>Status</th>
+                        <th>Cena</th>
+                        <th>Akcije</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        @foreach (var nalog in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <span class="service-order-number">
+                                        #@nalog.Id
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="management-owner">
+                                        <strong>
+                                            @(nalog.Customer?.FirstName ?? "")
+                                            @(nalog.Customer?.LastName ?? "")
+                                        </strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="management-owner">
+                                        <strong>
+                                            @(nalog.Vehicle?.Brand ?? "")
+                                            @(nalog.Vehicle?.Model ?? "")
+                                        </strong>
+                                        <small>
+                                            @nalog.Vehicle?.RegistrationNumber
+                                        </small>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="service-order-description"
+                                         title="@nalog.Description">
+                                        @nalog.Description
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="management-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        @nalog.DateCreated.ToString("dd.MM.yyyy.")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (nalog.Status == "Na čekanju")
+                                    {
+                                        <span class="service-status status-pending">
+                                            <i class="bi bi-clock"></i>
+                                            Na čekanju
+                                        </span>
+                                    }
+                                    else if (nalog.Status == "U toku")
+                                    {
+                                        <span class="service-status status-progress">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                            U toku
+                                        </span>
+                                    }
+                                    else if (nalog.Status == "Završen")
+                                    {
+                                        <span class="service-status status-completed">
+                                            <i class="bi bi-check-circle"></i>
+                                            Završen
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="service-status">
+                                            @nalog.Status
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <strong class="service-order-price">
+                                        @nalog.Price.ToString("N2") RSD
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+
+                                        <a asp-controller="ServiceOrders"
+                                           asp-action="Details"
+                                           asp-route-id="@nalog.Id"
+                                           class="action-btn action-details"
+                                           title="Detalji">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a asp-controller="ServiceOrders"
+                                           asp-action="Edit"
+                                           asp-route-id="@nalog.Id"
+                                           class="action-btn action-edit"
+                                           title="Izmeni">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        
+                                        <form asp-controller="ServiceOrders"
+                                              asp-action="DeleteConfirmed"
+                                              asp-route-id="@nalog.Id"
+                                              method="post"
+                                              style="display:inline">
+
+                                            <button type="submit"
+                                                    class="action-btn action-delete"
+                                                    title="Obriši"
+                                                    onclick="return confirm('Da li ste sigurni da želite da obrišete ovaj radni nalog?')">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8">
+                                <div class="management-empty">
+                                    <i class="bi bi-clipboard-x"></i>
+                                    <h4>Nema pronađenih radnih naloga</h4>
+                                    <p>Pokušajte sa drugačijim filterima ili kreirajte novi radni nalog.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
         </div>
     </div>
 
 </div>
 
-<p>Pregled svih servisnih naloga u sistemu.</p>
+<script>
+    const toast = document.getElementById("customToast");
 
-<a asp-controller="ServiceOrders"
-   asp-action="Create"
-   class="btn btn-primary mb-3">
-    + Novi radni nalog
-</a>
-<form asp-controller="ServiceOrders"
-      asp-action="Index"
-      method="get"
-      class="d-flex gap-2 mb-4">
+    function closeToast() {
+        if (!toast) return;
 
-    <input type="text"
-           name="pretraga"
-           value="@ViewBag.Pretraga"
-           class="form-control"
-           placeholder="Pretraži mušteriju, vozilo ili registraciju..." />
-    <select name="status" class="form-select">
-        <option value="">Svi statusi</option>
+        toast.classList.add("toast-hide");
 
-        <option value="Na čekanju"
-                selected="@(ViewBag.Status == "Na čekanju")">
-            Na čekanju
-        </option>
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
 
-        <option value="U toku"
-                selected="@(ViewBag.Status == "U toku")">
-            U toku
-        </option>
-
-        <option value="Završen"
-                selected="@(ViewBag.Status == "Završen")">
-            Završen
-        </option>
-    </select>
-    <select name="sortiranje" class="form-select">
-
-        <option value="najnoviji"
-                selected="@(ViewBag.Sortiranje != "najstariji")">
-            Najnoviji prvo
-        </option>
-
-        <option value="najstariji"
-                selected="@(ViewBag.Sortiranje == "najstariji")">
-            Najstariji prvo
-        </option>
-
-    </select>
-    <button type="submit" class="btn btn-danger">
-        <i class="bi bi-search"></i> Pretraži
-    </button>
-
-    <a asp-controller="ServiceOrders"
-       asp-action="Index"
-       class="btn btn-outline-secondary">
-        Poništi
-    </a>
-
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Broj naloga</th>
-            <th>Mušterija</th>
-            <th>Vozilo</th>
-            <th>Opis kvara</th>
-            <th>Datum prijema</th>
-            <th>Status</th>
-            <th>Cena</th>
-            <th>Akcije</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var nalog in Model)
-        {
-            <tr>
-                <td>#@nalog.Id</td>
-                <td>@(nalog.Customer?.FirstName ?? "") @(nalog.Customer?.LastName ?? "")</td>
-                <td>@(nalog.Vehicle?.Brand ?? "") @(nalog.Vehicle?.Model ?? "")</td>
-                <td>@nalog.Description</td>
-                <td>@nalog.DateCreated.ToString("dd.MM.yyyy.")</td>
-                <td>
-                    @if (nalog.Status == "Na čekanju")
-                    {
-                        <span class="badge bg-warning text-dark">
-                            Na čekanju
-                        </span>
-                    }
-                    else if (nalog.Status == "U toku")
-                    {
-                        <span class="badge bg-primary">
-                            U toku
-                        </span>
-                    }
-                    else if (nalog.Status == "Završen")
-                    {
-                        <span class="badge bg-success">
-                            Završen
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">
-                            @nalog.Status
-                        </span>
-                    }
-                </td>
-                <td>@nalog.Price.ToString("N2") RSD</td>
-                <td>
-                    <a asp-controller="ServiceOrders"
-                       asp-action="Details"
-                       asp-route-id="@nalog.Id"
-                       class="btn btn-info btn-sm">
-                        Detalji
-                    </a>
-
-                    <a asp-controller="ServiceOrders"
-                       asp-action="Edit"
-                       asp-route-id="@nalog.Id"
-                       class="btn btn-warning btn-sm">
-                        Izmeni
-                    </a>
-
-                    <form asp-controller="ServiceOrders"
-                          asp-action="Delete"
-                          asp-route-id="@nalog.Id"
-                          method="get"
-                          style="display:inline">
-
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            Obriši
-                        </button>
-
-                    </form>
-
-                </td>
-
-            </tr>
-        }
-    </tbody>
-</table>
+    if (toast) {
+        setTimeout(closeToast, 4000);
+    }
+</script>

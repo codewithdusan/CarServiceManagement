@@ -25,5 +25,7 @@ namespace CarServiceManagement.Models
 
         [ValidateNever]
         public Customer Customer { get; set; } = null!;
+        [ValidateNever]
+        public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
     }
 }
