@@ -36,6 +36,7 @@ namespace CarServiceManagement.Controllers
                 .ToList();
 
             ViewBag.BrojVozilaPoMusteriji = brojVozilaPoMusteriji;
+            ViewBag.UkupanPrihod = _kontekst.ServiceOrders.Where(nalog => nalog.Status == "Završen").Sum(nalog => (decimal?)nalog.Price) ?? 0;
 
             return View();
         }

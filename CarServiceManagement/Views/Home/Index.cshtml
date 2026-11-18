@@ -25,6 +25,20 @@
             </a>
         </div>
     </div>
+    <div class="col-md-6 mb-3">
+        <div class="card shadow p-4">
+            <h5>Ukupan prihod</h5>
+
+            <h2 class="text-success">
+                @(((decimal)ViewBag.UkupanPrihod).ToString("N2")) RSD
+            </h2>
+
+            <a asp-controller="ServiceOrders"
+               asp-action="Index">
+                Prikaži radne naloge
+            </a>
+        </div>
+    </div>
     <h3 class="mt-4">Poslednja dodata vozila</h3>
 
     <table class="table table-striped mt-3">

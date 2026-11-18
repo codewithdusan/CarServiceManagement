@@ -84,6 +84,19 @@
             Završen
         </option>
     </select>
+    <select name="sortiranje" class="form-select">
+
+        <option value="najnoviji"
+                selected="@(ViewBag.Sortiranje != "najstariji")">
+            Najnoviji prvo
+        </option>
+
+        <option value="najstariji"
+                selected="@(ViewBag.Sortiranje == "najstariji")">
+            Najstariji prvo
+        </option>
+
+    </select>
     <button type="submit" class="btn btn-danger">
         <i class="bi bi-search"></i> Pretraži
     </button>

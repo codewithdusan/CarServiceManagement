@@ -14,7 +14,7 @@ namespace CarServiceManagement.Controllers
         {
             _kontekst = kontekst;
         }
-        public IActionResult Index(string pretraga, string status)
+        public IActionResult Index(string pretraga, string status, string sortiranje)
         {
             var upit = _kontekst.ServiceOrders
                 .Include(nalog => nalog.Customer)
@@ -39,6 +39,15 @@ namespace CarServiceManagement.Controllers
                 upit = upit.Where(nalog => nalog.Status == status);
             }
 
+            if (sortiranje == "najstariji")
+            {
+                upit = upit.OrderBy(nalog => nalog.DateCreated);
+            }
+            else
+            {
+                upit = upit.OrderByDescending(nalog => nalog.DateCreated);
+            }
+
             var radniNalozi = upit.ToList();
             ViewBag.UkupnoNaloga = _kontekst.ServiceOrders.Count();
 
@@ -53,6 +62,7 @@ namespace CarServiceManagement.Controllers
 
             ViewBag.Pretraga = pretraga;
             ViewBag.Status = status;
+            ViewBag.Sortiranje = sortiranje;
 
             return View(radniNalozi);
         }
